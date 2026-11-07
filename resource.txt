@@ -1,0 +1,7 @@
+https://ccrma.stanford.edu/courses/422-winter-2014/projects/WaveFormat/
+https://github.com/MathWorks-Teaching-Resources/Fourier-Analysis
+
+Alternative principale : PySDR (gratuit, en ligne)
+
+C’est un manuel gratuit de Marc Lichtman, accessible sur https://pysdr.org. Il n’y a rien à télécharger, tu le lis dans le navigateur. Le site propose aussi une traduction française (le sélecteur de langue est en haut de page).
+
