@@ -15,8 +15,16 @@
 # # 20 % de chance que ça soit vrai ou 1 non ?
 # v = random.choice(t_20)
 
-a = [1,2,3,4]
+# a = [1,2,3,4]
 
-b = map(str,a)
+# b = map(str,a)
+
+
+a = [i+1 for i in range(0,8)]
+print(a)
+
+a = [a[i:i+8] for i in range(0,len(a),8)]
+
+print(a)
 
         
