@@ -24,8 +24,25 @@ def encoder_parite(bits: list):
         bits_parite = bits_parite + bloc_8_bits
     return bits_parite
 
-# def decoder_parite(bits: list) -> list:
-#     pass
+def decoder_parite(bits: list):
+    decouped_bits: list = [bits[i:i+9] for i in range(0, len(bits),9)]
+    errors_per_bloc = [0 for i in range(0, len(decouped_bits))]
+
+    for i in range(0, len(decouped_bits)):
+        is_impair = 0
+        for j in range(0, len(decouped_bits[i])):
+            if decouped_bits[i][j] == 1:
+                is_impair = abs(is_impair - decouped_bits[i][j])
+        if is_impair:
+            errors_per_bloc[i] = 1
+        decouped_bits[i].pop(8)
+
+    bits_info = []
+    for bloc_8_bits in decouped_bits:
+        bits_info = bits_info + bloc_8_bits
+
+    return bits_info,errors_per_bloc
+
 
 def bits_to_text(bits: list):  
     octets: list = [''.join(map(str, group)) for group in batched(bits, 8)]
@@ -58,26 +75,21 @@ if __name__:
     Text = "A"
     P = 0
 
-    print("\n SOURCE: ")
     binary_data = text_to_bits(Text)
-    print(binary_data)
 
-    text_data = bits_to_text(binary_data)
-    print(text_data)
+    print("\nSOURCE: ")
+    print(f"Data: {Text}")
+    print(f"Binary Data (before parity encoded): {binary_data}")
 
-    print(encoder_parite(binary_data))
-    # text_data = bits_to_text(binary_data)
-    # print(text_data)
+    binary_data_encoded_parity = encoder_parite(binary_data)
+    print(f"Binary Data (after parity encoded): {binary_data_encoded_parity}")
 
-    # print("\n RECEIVE: ")
-    # binary_data_2 = canal(binary_data, P)
-    # print(binary_data_2)
+    # Transmission here
 
-    # text_data_2 = bits_to_text(binary_data_2)
-    # print(text_data_2)
+    rec_binary_data = canal(binary_data_encoded_parity, P)
+    rec_binary_data_decoded_parity, rec_errors= decoder_parite(rec_binary_data)
 
-    # print(f"P: {P}")
-    # print(f"HAMMING DISTANCE: {hamming_distance(binary_data, binary_data_2)}")
-    # print(f"BER: {hamming_distance(binary_data, binary_data_2) / len(binary_data) } ")
-    # print(f"Number of bit: {len(binary_data)}")
-    pass
+    print("\nRECEIVE: ")
+    print(f"BInary Data (before parity decoded): {rec_binary_data}")
+    print(f"Binary Data (after parity decoded): {rec_binary_data_decoded_parity}")
+    print(f"Error per bloc: {rec_errors}")
