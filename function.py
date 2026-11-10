@@ -74,46 +74,38 @@ def hamming_distance(bits: list, r_bits: list) -> int:
     return h
 
 def fix_erros(bits_1: list, errors_1: list, bits_2: list, errors_2: list, bits_3: list, errors_3: list):
-    # check bolc who is not have errors
-    fixed_bits: list = []
-    pass
+    decouped_bit_1, decouped_bit_2, decouped_bit_3 = decoup_list(bits_1), decoup_list(bits_2), decoup_list(bits_3)
+    fixed_bits: list = [[0] for i in range(0, len(decouped_bit_1))]
+    rest_errors: list = [0 for i in range(0, len(errors_1))]
+    for i in range(0, len(errors_1)):
+        if errors_1[i] == 0:
+            fixed_bits[i] = decouped_bit_1[i]
+            continue
+        if errors_2[i] == 0:
+            fixed_bits[i] = decouped_bit_2[i]
+            continue
+        if errors_3[i] == 0:
+            fixed_bits[i] = decouped_bit_3[i]
+            continue
+
+        rest_errors[i] = 1
+        fixed_bits[i] = check_majority(decouped_bit_1[i], decouped_bit_2[i], decouped_bit_3[i])
 
 
-if __name__:
-    Text = "CAC"
-    P = 1
+    
+    bits_info = []
+    for bloc_8_bits in fixed_bits:
+        bits_info = bits_info + bloc_8_bits
 
-    binary_data = text_to_bits(Text)
-
-    print("\nSOURCE: ")
-    print(f"Data: {Text}")
-    print(f"Binary Data (before parity encoded): {binary_data}")
-
-    binary_data_encoded_parity = encoder_parite(binary_data)
-    print(f"Binary Data (after parity encoded): {binary_data_encoded_parity}")
-
-    # Transmission here
-
-    rec_binary_data_1 = canal(binary_data_encoded_parity, P)
-    rec_binary_data_2 = canal(binary_data_encoded_parity, P)
-    rec_binary_data_3 = canal(binary_data_encoded_parity, P)
-    rec_binary_data_decoded_parity_1, rec_errors_1= decoder_parite(rec_binary_data_1)
-    rec_binary_data_decoded_parity_2, rec_errors_2= decoder_parite(rec_binary_data_2)
-    rec_binary_data_decoded_parity_3, rec_errors_3= decoder_parite(rec_binary_data_3)
+    return bits_info, rest_errors
 
 
 
-    print("\nRECEIVE: ")
-    print(f"Binary Data (before parity decoded): {rec_binary_data_1}")
-    print(f"Binary Data (after parity decoded): {rec_binary_data_decoded_parity_1}")
-    print(f"Error per bloc: {rec_errors_1}")
-
-    # text_data_2 = bits_to_text(binary_data_2)
-    # print(text_data_2)
-
-    print("\nINFO:")
-    print(f"P: {P}%")
-    print(f"HAMMING DISTANCE: {hamming_distance(binary_data, rec_binary_data_decoded_parity_1)}")
-    print(f"BER: {hamming_distance(binary_data, rec_binary_data_decoded_parity_1) / len(binary_data) } ")
-    print(f"Number Bit: {len(binary_data)}")
-    pass
+def check_majority(l_1: list, l_2: list, l_3: list) -> list:
+    if sum(l_1) == sum(l_2):
+        return l_1
+    if sum(l_1) == sum(l_3):
+        return l_1
+    if sum(l_2) == sum(l_3):
+        return l_2
+    return l_3
