@@ -8,7 +8,7 @@ def text_to_bits(txt: str):
     return bits
 
 def encoder_parite(bits: list):
-    decouped_bits = [bits[i:i+8] for i in range(0, len(bits),8)]
+    decouped_bits = decoup_list(bits)
     for i in range(0, len(decouped_bits)):
         is_impair = 0
         for j in range(0, len(decouped_bits[i])):
@@ -25,7 +25,7 @@ def encoder_parite(bits: list):
     return bits_parite
 
 def decoder_parite(bits: list):
-    decouped_bits: list = [bits[i:i+9] for i in range(0, len(bits),9)]
+    decouped_bits: list = decoup_list(bits, 9)
     errors_per_bloc = [0 for i in range(0, len(decouped_bits))]
 
     for i in range(0, len(decouped_bits)):
@@ -43,6 +43,8 @@ def decoder_parite(bits: list):
 
     return bits_info,errors_per_bloc
 
+def decoup_list(l: list, n_per_bloc: int = 8) -> list:
+    return [l[i:i+n_per_bloc] for i in range(0, len(l), n_per_bloc)]
 
 def bits_to_text(bits: list):  
     octets: list = [''.join(map(str, group)) for group in batched(bits, 8)]
@@ -71,9 +73,15 @@ def hamming_distance(bits: list, r_bits: list) -> int:
             h = h + 1
     return h
 
+def fix_erros(bits_1: list, errors_1: list, bits_2: list, errors_2: list, bits_3: list, errors_3: list):
+    # check bolc who is not have errors
+    fixed_bits: list = []
+    pass
+
+
 if __name__:
-    Text = "A"
-    P = 0
+    Text = "CAC"
+    P = 1
 
     binary_data = text_to_bits(Text)
 
@@ -86,10 +94,26 @@ if __name__:
 
     # Transmission here
 
-    rec_binary_data = canal(binary_data_encoded_parity, P)
-    rec_binary_data_decoded_parity, rec_errors= decoder_parite(rec_binary_data)
+    rec_binary_data_1 = canal(binary_data_encoded_parity, P)
+    rec_binary_data_2 = canal(binary_data_encoded_parity, P)
+    rec_binary_data_3 = canal(binary_data_encoded_parity, P)
+    rec_binary_data_decoded_parity_1, rec_errors_1= decoder_parite(rec_binary_data_1)
+    rec_binary_data_decoded_parity_2, rec_errors_2= decoder_parite(rec_binary_data_2)
+    rec_binary_data_decoded_parity_3, rec_errors_3= decoder_parite(rec_binary_data_3)
+
+
 
     print("\nRECEIVE: ")
-    print(f"BInary Data (before parity decoded): {rec_binary_data}")
-    print(f"Binary Data (after parity decoded): {rec_binary_data_decoded_parity}")
-    print(f"Error per bloc: {rec_errors}")
+    print(f"Binary Data (before parity decoded): {rec_binary_data_1}")
+    print(f"Binary Data (after parity decoded): {rec_binary_data_decoded_parity_1}")
+    print(f"Error per bloc: {rec_errors_1}")
+
+    # text_data_2 = bits_to_text(binary_data_2)
+    # print(text_data_2)
+
+    print("\nINFO:")
+    print(f"P: {P}%")
+    print(f"HAMMING DISTANCE: {hamming_distance(binary_data, rec_binary_data_decoded_parity_1)}")
+    print(f"BER: {hamming_distance(binary_data, rec_binary_data_decoded_parity_1) / len(binary_data) } ")
+    print(f"Number Bit: {len(binary_data)}")
+    pass
