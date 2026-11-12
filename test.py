@@ -65,3 +65,27 @@
 #     if b == 'b':
 #         continue
 #     print(a,":",b)
+
+def get_hamming_74(bits: list) -> list:
+    if len(bits) != 4:
+        raise
+
+    pos_bit_donnee_index = [2, 4, 5, 6]
+    hamming = [0 for i in range(0, 7)]
+    for index,bit in enumerate(bits):
+        hamming[pos_bit_donnee_index[index]] = bit
+
+    if ((hamming[2]+hamming[4]+hamming[6]) % 2) == 1:
+        hamming[0] = 1
+
+    if ((hamming[2]+hamming[5]+hamming[6]) % 2) == 1:
+        hamming[1] = 1
+
+    if ((hamming[4]+hamming[5]+hamming[6]) % 2) == 1:
+        hamming[3] = 1 
+
+    return hamming
+
+a = [1, 1, 1, 1]
+
+print(get_hamming_74(a))
