@@ -73,39 +73,37 @@ def hamming_distance(bits: list, r_bits: list) -> int:
             h = h + 1
     return h
 
-def fix_erros(bits_1: list, errors_1: list, bits_2: list, errors_2: list, bits_3: list, errors_3: list):
+def fix_erros(bits_1: list, bits_2: list, bits_3: list):
     decouped_bit_1, decouped_bit_2, decouped_bit_3 = decoup_list(bits_1), decoup_list(bits_2), decoup_list(bits_3)
-    fixed_bits: list = [[0] for i in range(0, len(decouped_bit_1))]
-    rest_errors: list = [0 for i in range(0, len(errors_1))]
-    for i in range(0, len(errors_1)):
-        if errors_1[i] == 0:
-            fixed_bits[i] = decouped_bit_1[i]
-            continue
-        if errors_2[i] == 0:
-            fixed_bits[i] = decouped_bit_2[i]
-            continue
-        if errors_3[i] == 0:
-            fixed_bits[i] = decouped_bit_3[i]
-            continue
+    voted_bits: list = []
 
-        rest_errors[i] = 1
-        fixed_bits[i] = check_majority(decouped_bit_1[i], decouped_bit_2[i], decouped_bit_3[i])
-
-
+    for b1, b2, b3 in zip(decouped_bit_1, decouped_bit_2, decouped_bit_3):
+        voted_bits.append(check_majority(b1, b2, b3))
     
-    bits_info = []
-    for bloc_8_bits in fixed_bits:
-        bits_info = bits_info + bloc_8_bits
+    fixed_bits = []
+    for bloc_8_bits in voted_bits:
+        fixed_bits = fixed_bits + bloc_8_bits
 
-    return bits_info, rest_errors
+    return fixed_bits
 
 
 
 def check_majority(l_1: list, l_2: list, l_3: list) -> list:
-    if sum(l_1) == sum(l_2):
+    if l_1 == l_2:
         return l_1
-    if sum(l_1) == sum(l_3):
+    if l_1 == l_3:
         return l_1
-    if sum(l_2) == sum(l_3):
+    if l_2 == l_3:
         return l_2
-    return l_3
+
+    voted: list = [] 
+    for a,b,c in zip(l_1, l_2, l_3):
+        if a == b:
+            voted.append(a)
+            continue
+        if a == c:
+            voted.append(a)
+            continue
+        voted.append(c)
+
+    return voted   

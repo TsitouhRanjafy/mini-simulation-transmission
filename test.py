@@ -58,8 +58,10 @@
 # print(e)
         
 
-liste1 = [1, 2, 3]
-liste2 = ['a', 'b', 'c']
+# liste1 = [1, 2, 3]
+# liste2 = ['a', 'b', 'c']
 
-for a,b in zip(liste1, liste2):
-    print(a,":",b)
+# for a,b in zip(liste1, liste2):
+#     if b == 'b':
+#         continue
+#     print(a,":",b)
